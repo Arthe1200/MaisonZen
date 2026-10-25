@@ -39,7 +39,7 @@ struct ExpensesView: View {
     @State private var editing = false
     @State private var selectedExpense: MaisonDocument?
     @State private var showShared = true
-    private var rows: [MaisonDocument] { store.documents(of: "expense").filter { record in guard let record = store.record(for: $0) else { return false }; return showShared ? record.audience == "adults" : record.audience == "owner" } }
+    private var rows: [MaisonDocument] { store.documents(of: "expense").filter { document in guard let record = store.record(for: document) else { return false }; return showShared ? record.audience == "adults" : record.audience == "owner" } }
     var body: some View {
         VStack(spacing: 0) {
             Picker("Dépenses", selection: $showShared) { Text("Foyer").tag(true); Text("Personnelles").tag(false) }.pickerStyle(.segmented).padding()

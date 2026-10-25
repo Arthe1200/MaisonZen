@@ -61,16 +61,16 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     SectionHeading(title: "Ton espace", subtitle: "Tout le foyer, au même endroit")
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 11) {
-                        HomeTile(title: "Abonnements", subtitle: "Paiements réguliers", icon: "creditcard", destination: SubscriptionsView())
-                        HomeTile(title: "Dépenses", subtitle: "Privées et communes", icon: "chart.pie", destination: ExpensesView())
-                        HomeTile(title: "Rappels", subtitle: "Dates et notifications", icon: "bell", destination: RemindersView())
-                        HomeTile(title: "Tâches", subtitle: "À faire ensemble", icon: "checklist", destination: TasksView())
-                        HomeTile(title: "Planning", subtitle: "La semaine du foyer", icon: "calendar", destination: CalendarView())
-                        HomeTile(title: "Frigo", subtitle: "Produits et péremption", icon: "refrigerator", destination: FridgeView())
-                        HomeTile(title: "Recettes", subtitle: "Idées pour les repas", icon: "fork.knife", destination: RecipesView())
-                        HomeTile(title: "Messages", subtitle: "Le chat du foyer", icon: "bubble.left.and.bubble.right", destination: ChatView())
-                        HomeTile(title: "Appels", subtitle: "Appel audio familial", icon: "phone", destination: CallsView())
-                        HomeTile(title: "Tableau de bord", subtitle: "Mode tablette", icon: "rectangle.3.group", destination: FamilyDashboardView())
+                        HomeTile(title: "Abonnements", subtitle: "Paiements réguliers", icon: "creditcard") { SubscriptionsView() }
+                        HomeTile(title: "Dépenses", subtitle: "Privées et communes", icon: "chart.pie") { ExpensesView() }
+                        HomeTile(title: "Rappels", subtitle: "Dates et notifications", icon: "bell") { RemindersView() }
+                        HomeTile(title: "Tâches", subtitle: "À faire ensemble", icon: "checklist") { TasksView() }
+                        HomeTile(title: "Planning", subtitle: "La semaine du foyer", icon: "calendar") { CalendarView() }
+                        HomeTile(title: "Frigo", subtitle: "Produits et péremption", icon: "refrigerator") { FridgeView() }
+                        HomeTile(title: "Recettes", subtitle: "Idées pour les repas", icon: "fork.knife") { RecipesView() }
+                        HomeTile(title: "Messages", subtitle: "Le chat du foyer", icon: "bubble.left.and.bubble.right") { ChatView() }
+                        HomeTile(title: "Appels", subtitle: "Appel audio familial", icon: "phone") { CallsView() }
+                        HomeTile(title: "Tableau de bord", subtitle: "Mode tablette", icon: "rectangle.3.group") { FamilyDashboardView() }
                     }
                 }
                 if store.isBusy { ProgressView("Synchronisation sécurisée…").frame(maxWidth: .infinity).padding(.top, 5) }
@@ -119,8 +119,8 @@ private struct MetricCard: View {
 }
 
 struct HomeTile<Destination: View>: View {
-    var title: String; var subtitle: String; var icon: String; @ViewBuilder var destination: Destination
-    var body: some View { NavigationLink { destination } label: { HStack(alignment: .top, spacing: 11) { Image(systemName: icon).font(.title3).foregroundStyle(Color.maisonTeal).frame(width: 30); VStack(alignment: .leading, spacing: 4) { Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(Color.maisonInk); Text(subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(2) }; Spacer(minLength: 0) }.padding(14).frame(maxWidth: .infinity, minHeight: 82, alignment: .leading).background(.white, in: RoundedRectangle(cornerRadius: 17)) }.buttonStyle(.plain) }
+    var title: String; var subtitle: String; var icon: String; @ViewBuilder var destination: () -> Destination
+    var body: some View { NavigationLink { destination() } label: { HStack(alignment: .top, spacing: 11) { Image(systemName: icon).font(.title3).foregroundStyle(Color.maisonTeal).frame(width: 30); VStack(alignment: .leading, spacing: 4) { Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(Color.maisonInk); Text(subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(2) }; Spacer(minLength: 0) }.padding(14).frame(maxWidth: .infinity, minHeight: 82, alignment: .leading).background(.white, in: RoundedRectangle(cornerRadius: 17)) }.buttonStyle(.plain) }
 }
 
 struct SectionHeading: View { var title: String; var subtitle: String? = nil; var body: some View { VStack(alignment: .leading, spacing: 2) { Text(title).font(.headline).foregroundStyle(Color.maisonInk); if let subtitle { Text(subtitle).font(.caption).foregroundStyle(.secondary) } } } }
