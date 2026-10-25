@@ -42,6 +42,15 @@ jobs:
         run: |
           mkdir -p build/Payload
           cp -R build/MaisonZen.xcarchive/Products/Applications/MaisonZen.app build/Payload/
+          APP="build/Payload/MaisonZen.app"
+          # Keep the unsigned archive compatible with Windows signers such as iPASide.
+          # Xcode can leave build-variable placeholders unresolved in an unsigned archive.
+          /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier fr.maisonzen.app" "$APP/Info.plist" || /usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string fr.maisonzen.app" "$APP/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString 0.1.0" "$APP/Info.plist" || /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string 0.1.0" "$APP/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion 1" "$APP/Info.plist" || /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string 1" "$APP/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleExecutable MaisonZen" "$APP/Info.plist" || /usr/libexec/PlistBuddy -c "Add :CFBundleExecutable string MaisonZen" "$APP/Info.plist"
+          test -f "$APP/MaisonZen"
+          plutil -lint "$APP/Info.plist"
           /usr/bin/ditto -c -k --sequesterRsrc --keepParent build/Payload build/MaisonZen-unsigned.ipa
       - name: Upload IPA
         uses: actions/upload-artifact@v4
