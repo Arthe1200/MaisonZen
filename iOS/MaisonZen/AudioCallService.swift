@@ -67,7 +67,7 @@ final class AudioCallService: NSObject, RTCPeerConnectionDelegate {
             guard let self, error == nil else { Task { @MainActor in self?.callError = error?.localizedDescription }; return }
             let constraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
             peer.answer(for: constraints) { answer, answerError in
-                guard let answer, answerError == nil else { Task { @MainActor in self?.callError = answerError?.localizedDescription }; return }
+                guard let answer, answerError == nil else { Task { @MainActor in self.callError = answerError?.localizedDescription }; return }
                 peer.setLocalDescription(answer) { [weak self] setError in
                     Task { @MainActor in
                         guard let self, setError == nil else { self?.callError = setError?.localizedDescription; return }

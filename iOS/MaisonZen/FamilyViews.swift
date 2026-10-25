@@ -8,7 +8,8 @@ struct ChatView: View {
     private var messages: [MaisonDocument] { store.documents(of: "chat").sorted { ($0.date ?? .distantPast) < ($1.date ?? .distantPast) }.filter { doc in
         guard let record = store.record(for: doc) else { return false }
         if record.audience == "household" { return selectedMembers.isEmpty }
-        return record.ownerId == store.userId || (record.allowedMemberIds.contains(store.userId ?? UUID.zero) && Set(record.allowedMemberIds.filter { $0 != store.userId }) == selectedMembers)
+        guard let currentUser = store.userId else { return false }
+        return record.ownerId == currentUser || (record.allowedMemberIds.contains(currentUser) && Set(record.allowedMemberIds.filter { $0 != currentUser }) == selectedMembers)
     } }
     var body: some View {
         VStack(spacing: 0) {
@@ -26,7 +27,7 @@ struct ChatView: View {
     private func send() {
         guard let user = store.userId else { return }
         let allowed = selectedMembers.isEmpty ? [] : Array(selectedMembers.union([user]))
-        let doc = MaisonDocument(kind: "chat", title: store.displayName, detail: message, date: .now, allowedMembers: allowed, category: selectedMembers.isEmpty ? "foyer" : "privé")
+        let doc = MaisonDocument(kind: "chat", title: store.displayName, detail: message, category: selectedMembers.isEmpty ? "foyer" : "privé", date: .now, allowedMembers: allowed)
         let audience = selectedMembers.isEmpty ? "household" : "members"
         let current = message; message = ""
         Task { await store.save(doc, audience: audience, allowed: allowed); if store.errorMessage != nil { message = current } }
@@ -89,13 +90,13 @@ struct FamilyDashboardView: View {
             ForEach(order, id: \.self) { item in widget(item).frame(minHeight: wide.contains(item) ? 210 : 145).gridCellColumns(wide.contains(item) ? 2 : 1).draggable(item).dropDestination(for: String.self) { items, _ in guard let moved = items.first, let from = order.firstIndex(of: moved), let to = order.firstIndex(of: item) else { return false }; var reordered = order; reordered.move(fromOffsets: IndexSet(integer: from), toOffset: to); savedOrder = reordered.joined(separator: "|"); return true }.overlay(alignment: .topTrailing) { if editMode { Button { var sizes = wide; if sizes.contains(item) { sizes.remove(item) } else { sizes.insert(item) }; savedWide = sizes.sorted().joined(separator: "|") } label: { Image(systemName: wide.contains(item) ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right").padding(8).background(.white.opacity(0.85), in: Circle()) }.buttonStyle(.plain).padding(8) } } }
         }.animation(.snappy, value: order)
         LazyVGrid(columns: columns, spacing: 12) {
-            HomeTile(title: "Dépenses", subtitle: "Privées et du foyer", icon: "chart.pie", destination: ExpensesView())
-            HomeTile(title: "Planning", subtitle: "Événements partagés", icon: "calendar", destination: CalendarView())
-            HomeTile(title: "Frigo", subtitle: "Produits et dates", icon: "refrigerator", destination: FridgeView())
-            HomeTile(title: "Recettes", subtitle: "Repas et préférences", icon: "fork.knife", destination: RecipesView())
-            HomeTile(title: "Messages", subtitle: "Discussions du foyer", icon: "bubble.left.and.bubble.right", destination: ChatView())
-            HomeTile(title: "Appels", subtitle: "Audio familial", icon: "phone", destination: CallsView())
-            HomeTile(title: "Membres", subtitle: "Rôles et invitations", icon: "person.3", destination: HouseholdView())
+            HomeTile(title: "Dépenses", subtitle: "Privées et du foyer", icon: "chart.pie") { ExpensesView() }
+            HomeTile(title: "Planning", subtitle: "Événements partagés", icon: "calendar") { CalendarView() }
+            HomeTile(title: "Frigo", subtitle: "Produits et dates", icon: "refrigerator") { FridgeView() }
+            HomeTile(title: "Recettes", subtitle: "Repas et préférences", icon: "fork.knife") { RecipesView() }
+            HomeTile(title: "Messages", subtitle: "Discussions du foyer", icon: "bubble.left.and.bubble.right") { ChatView() }
+            HomeTile(title: "Appels", subtitle: "Audio familial", icon: "phone") { CallsView() }
+            HomeTile(title: "Membres", subtitle: "Rôles et invitations", icon: "person.3") { HouseholdView() }
         }
     }.padding(18).frame(maxWidth: 1100).frame(maxWidth: .infinity) }.navigationTitle("Tableau de bord").navigationBarTitleDisplayMode(.inline).toolbar { ToolbarItem(placement: .topBarTrailing) { NavigationLink { SettingsView() } label: { Image(systemName: "gearshape") }.accessibilityLabel("Réglages") } }.background(Color.maisonCanvas.ignoresSafeArea()) }
 
