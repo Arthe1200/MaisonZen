@@ -1,0 +1,27 @@
+name: MaisonZen server verification
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'Server/**'
+      - '.github/workflows/server-verification.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-server:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Build and verify
+        shell: pwsh
+        working-directory: Server
+        run: |
+          dotnet build
+          ./run-verification.ps1

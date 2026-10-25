@@ -1,0 +1,26 @@
+# .NET build output, databases and server secrets
+Server/bin/
+Server/obj/
+Server/data/
+Server/*.pfx
+Server/*.pem
+Server/*.key
+
+# Xcode / Swift Package Manager output
+iOS/DerivedData/
+iOS/build/
+iOS/.build/
+iOS/**/xcuserdata/
+iOS/**/project.xcworkspace/xcuserdata/
+iOS/**/Package.resolved
+
+# Android build output
+Android/.gradle/
+Android/build/
+Android/**/build/
+Android/local.properties
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+*.user
