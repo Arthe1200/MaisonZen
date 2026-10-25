@@ -49,13 +49,18 @@ jobs:
           /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString 0.1.0" "$APP/Info.plist" || /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string 0.1.0" "$APP/Info.plist"
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion 1" "$APP/Info.plist" || /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string 1" "$APP/Info.plist"
           /usr/libexec/PlistBuddy -c "Set :CFBundleExecutable MaisonZen" "$APP/Info.plist" || /usr/libexec/PlistBuddy -c "Add :CFBundleExecutable string MaisonZen" "$APP/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundlePackageType APPL" "$APP/Info.plist" || /usr/libexec/PlistBuddy -c "Add :CFBundlePackageType string APPL" "$APP/Info.plist"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$APP/Info.plist"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$APP/Info.plist"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "$APP/Info.plist"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" "$APP/Info.plist"
           test -f "$APP/MaisonZen"
           plutil -lint "$APP/Info.plist"
-          /usr/bin/ditto -c -k --sequesterRsrc --keepParent build/Payload build/MaisonZen-unsigned.ipa
+          /usr/bin/ditto -c -k --sequesterRsrc --keepParent build/Payload build/MaisonZen-sideload.ipa
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: MaisonZen-iOS-unsigned
-          path: iOS/build/MaisonZen-unsigned.ipa
+          name: MaisonZen-iOS-sideload-v2
+          path: iOS/build/MaisonZen-sideload.ipa
           if-no-files-found: error
           retention-days: 14
