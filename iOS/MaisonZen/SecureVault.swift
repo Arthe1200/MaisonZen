@@ -63,7 +63,7 @@ enum SecureVault {
     }
 
     static func saveSession(_ token: String) throws { try keychainWrite(Data(token.utf8), name: "maisonzen.session") }
-    static func sessionToken() -> String? { guard let data = try? keychainRead("maisonzen.session") else { return nil }; return data.flatMap { String(data: $0, encoding: .utf8) } }
+    static func sessionToken() -> String? { guard let data = try? keychainRead("maisonzen.session") else { return nil }; return String(data: data, encoding: .utf8) }
     static func clearSession() { try? keychainDelete("maisonzen.session") }
     static func saveHouseholdKey(_ key: Data, householdId: UUID) throws { try keychainWrite(key, name: "maisonzen.household.\(householdId.uuidString)") }
     static func householdKey(_ householdId: UUID) -> Data? {
@@ -80,7 +80,7 @@ enum SecureVault {
         let derived = HKDF<SHA256>.deriveKey(inputKeyMaterial: SymmetricKey(data: privateKey.rawRepresentation), salt: Data("MaisonZen-personal-key-v1".utf8), info: Data(userId.uuidString.utf8), outputByteCount: 32)
         return derived.withUnsafeBytes { Data($0) }
     }
-    static func recoveryCode() -> String? { guard let stored = try? keychainRead("maisonzen.recovery.code") else { return nil }; return stored.flatMap { String(data: $0, encoding: .utf8) } }
+    static func recoveryCode() -> String? { guard let data = try? keychainRead("maisonzen.recovery.code") else { return nil }; return String(data: data, encoding: .utf8) }
     static func makeRecoveryCode() -> String { Data((0..<32).map { _ in UInt8.random(in: .min ... .max) }).base64EncodedString() }
     static func saveRecoveryCode(_ code: String) throws { try keychainWrite(Data(code.utf8), name: "maisonzen.recovery.code") }
 
