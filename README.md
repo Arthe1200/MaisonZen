@@ -1,6 +1,6 @@
 # MaisonZen
 
-MaisonZen est une application gratuite d’organisation familiale pour iPhone et iPad, reliée à un serveur hébergé sur le PC de la maison. Elle permet de gérer les foyers, les abonnements, les dépenses, les rappels, les tâches, le planning, le frigo, les recettes et les échanges familiaux.
+MaisonZen est une application gratuite d’organisation familiale pour iPhone, iPad et Android, reliée à un serveur hébergé sur le PC de la maison. Elle permet de gérer les foyers, les abonnements, les dépenses, les rappels, les tâches, le planning, le frigo, les recettes et les échanges familiaux.
 
 ## Installer l’application iOS
 
@@ -13,6 +13,16 @@ MaisonZen est une application gratuite d’organisation familiale pour iPhone et
 7. Si l’application est installée directement, faire confiance au profil dans **Réglages → Général → VPN et gestion de l’appareil**.
 
 LiveContainer peut être utilisé pour les tests si l’installation directe ferme l’application. Dans ce cas, lancer MaisonZen depuis LiveContainer.
+
+## Installer l’application Android
+
+1. Ouvrir **Actions → MaisonZen Android build** dans le dépôt GitHub.
+2. Lancer **Run workflow** si aucune compilation récente n’est disponible.
+3. Télécharger l’artefact `MaisonZen-Android-debug` de l’exécution terminée avec succès et extraire `app-debug.apk`.
+4. Installer l’APK sur le téléphone avec Android Debug Bridge (`adb install -r app-debug.apk`) ou en ouvrant le fichier depuis le téléphone.
+5. Saisir dans Maison Zen l’adresse IPv4 du PC et le port `5080`.
+
+Les détails d’installation, de configuration du serveur et de récupération des données sont dans [le guide Android](Android/README.md).
 
 ## Lancer le serveur sur Windows
 
@@ -45,7 +55,7 @@ L’iPhone et le PC doivent être connectés au même Wi-Fi. Le pare-feu Windows
 1. Créer un compte avec une adresse e-mail et un mot de passe.
 2. Créer un foyer ou rejoindre un foyer avec un code d’invitation.
 3. L’administrateur invite les autres membres et attribue leur rôle : adulte, enfant ou locataire.
-4. Utiliser l’accueil pour accéder aux abonnements, dépenses, rappels, tâches, planning, frigo, recettes, messages et appels.
+4. Utiliser l’accueil pour accéder aux abonnements, dépenses, rappels, tâches, planning, frigo, recettes et messages.
 5. Les dépenses personnelles restent privées ; les dépenses du foyer sont réservées aux adultes.
 6. Les rappels peuvent être individuels ou destinés à tout le foyer, avec répétition et mode silencieux.
 7. Les données du foyer sont chiffrées sur les appareils avant leur synchronisation avec le serveur.
@@ -58,7 +68,8 @@ Le serveur doit être démarré avant la connexion ou la synchronisation. Pour a
 - [Family test checklist and feedback sheet](TEST-FAMILLE.md)
 - [iOS build and family test notes](iOS/README.md)
 - [Home server setup](Server/README.md)
-- [Android project status](Android/README.md)
+- [Android installation and user guide](Android/README.md)
+- [GitHub Actions Android workflow](.github/workflows/android-build.yml)
 - [GitHub Actions iOS workflow](.github/workflows/ios-build.yml)
 - Original logo: `assets/maisonzen-logo.svg`
 
@@ -76,4 +87,4 @@ The script starts an isolated development server with a temporary database, chec
 
 ## Privacy summary
 
-Family records are encrypted on Apple devices before synchronization. The server stores encrypted record contents and applies access rules using role and audience metadata. It separately encrypts account email and profile names at rest so it can authenticate users and show household members. The server can decrypt those account fields; household record contents are not decrypted by the server. A barcode lookup sends only the barcode through the home server to Open Food Facts. See the plan for remaining security boundaries and the current feature status.
+Family records are encrypted on Apple and Android devices before synchronization. The server stores encrypted record contents and applies access rules using role and audience metadata. It separately encrypts account email and profile names at rest so it can authenticate users and show household members. The server can decrypt those account fields; household record contents are not decrypted by the server. A barcode lookup sends only the barcode through the home server to Open Food Facts. See the platform guides for features that are still in progress.
