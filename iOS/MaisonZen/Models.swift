@@ -120,7 +120,7 @@ enum MaisonJSON {
 enum MaisonMoney {
     static func monthlyAmount(for document: MaisonDocument) -> Double {
         let value = document.amount ?? 0
-        switch document.recurrence {
+        return switch document.recurrence {
         case "Chaque semaine": value * 52 / 12
         case "Chaque année": value / 12
         default: value
